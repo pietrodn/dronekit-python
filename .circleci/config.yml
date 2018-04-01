@@ -65,9 +65,9 @@ jobs:
           command: ./scripts/update-docs.sh
 
 # Send a notification on Gitter
-notify:
- webhooks:
-   - url: https://webhooks.gitter.im/e/27b0e1a9fede99dbbe6c
+#notify:
+# webhooks:
+#   - url: https://webhooks.gitter.im/e/27b0e1a9fede99dbbe6c
 
 # Workflow definition
 # Run Python 2 and Python 3 testing in parallel

@@ -15,9 +15,15 @@ common: &commonsteps
         command: |
           virtualenv venv
           source venv/bin/activate
-          pip install -UI future
-          pip install -r requirements.txt -UI
-          pip install . -UI
+          pip install -U future
+          git clone -b py3-newfix https://github.com/pietrodn/pymavlink.git pymavlink
+          git clone https://github.com/mavlink/mavlink.git pymavlink/mavlink
+          pushd pymavlink
+          pip install -r requirements.txt -U
+          pip install .
+          popd
+          pip install -r requirements.txt -U
+          pip install . -U
 
     - run:
         name: Run dronekit tests

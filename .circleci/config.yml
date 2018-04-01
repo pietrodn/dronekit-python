@@ -17,10 +17,10 @@ common: &commonsteps
           source venv/bin/activate
           pip install -U future
           git clone -b py3-newfix https://github.com/pietrodn/pymavlink.git pymavlink
-          git clone https://github.com/mavlink/mavlink.git pymavlink/mavlink
           pushd pymavlink
+          git clone https://github.com/mavlink/mavlink.git mavlink
           pip install -r requirements.txt -U
-          pip install .
+          pip install -e .
           popd
           pip install -r requirements.txt -U
           pip install . -U

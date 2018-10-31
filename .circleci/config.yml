@@ -21,9 +21,6 @@ common: &commonsteps
 
     - run:
         name: Run dronekit tests
-        environment:
-          SITL_SPEEDUP: 10
-          SITL_RATE: 200
         command: |
           source venv/bin/activate
           nosetests -svx dronekit.test.unit

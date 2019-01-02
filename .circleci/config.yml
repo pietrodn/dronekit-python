@@ -53,7 +53,7 @@ jobs:
                       docker run -it \
                       -p 14556:14556/udp \
                       --name=px4container px4io/px4-dev-simulation:latest \
-                      bash -c "git clone -b stable https://github.com/PX4/Firmware.git /src/firmware && cd /src/firmware && make posix_sitl_default gazebo"
+                      bash -c "git clone -b stable https://github.com/PX4/Firmware.git ~/firmware && cd ~/firmware && make posix_sitl_default gazebo"
             - run:
                   name: "Sleep"
                   command: "sleep 10"

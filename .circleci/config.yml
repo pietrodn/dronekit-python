@@ -2,82 +2,73 @@
 
 # Steps common to both Python 2 and Python 3
 common: &commonsteps
-  steps:
-    - checkout
+    steps:
+        - checkout
 
-    - run:
-        name: Install dronekit with dependencies
-        command: |
-          virtualenv venv
-          source venv/bin/activate
-          pip install -UI future
-          pip install -r requirements.txt -UI
-          pip install . -UI
+        - run:
+              name: Install dronekit with dependencies
+              command: |
+                  virtualenv venv
+                  source venv/bin/activate
+                  pip install -UI future
+                  pip install -r requirements.txt -UI
+                  pip install . -UI
 
-    - run:
-        name: Run dronekit tests
-        environment:
-          SITL_SPEEDUP: 10
-          SITL_RATE: 200
-        command: |
-          source venv/bin/activate
-          nosetests -svx dronekit.test.unit
-          nosetests -svx dronekit.test.sitl
-
-    - run:
-        name: Build documentation
-        command: |
-          source venv/bin/activate
-          cd docs; make clean; make html
-
-    - store_artifacts:
-        path: test-reports
-        destination: test-reports
+        - run:
+              name: Run dronekit tests
+              environment:
+                  SITL_SPEEDUP: 10
+                  SITL_RATE: 200
+              command: |
+                  source venv/bin/activate
+                  nosetests -svx dronekit.test.unit
+                  nosetests -svx dronekit.test.sitl
 
 # Jobs definition
 version: 2
 jobs:
-  python2:
-    docker:
-      - image: circleci/python:2.7-stretch
-    working_directory: ~/dronekit-python2
-    <<: *commonsteps
+    python2:
+        docker:
+            - image: circleci/python:2.7-stretch
+        working_directory: ~/dronekit-python2
+        <<: *commonsteps
 
-  python3:
-    docker:
-      - image: circleci/python:3.6-stretch
-    working_directory: ~/dronekit-python3
-    <<: *commonsteps
+    python3:
+        docker:
+            - image: circleci/python:3.6-stretch
+        working_directory: ~/dronekit-python3
+        <<: *commonsteps
 
-  deploy:
-    name: Deploy to dronekit.io
-    working_directory: ~/deploy
-    machine: true
-    steps:
-      - checkout
-      - run:
-          name: update docs
-          command: ./scripts/update-docs.sh
+    px4:
+        docker:
+            - image: circleci/python:3.6-stretch
+        working_directory: ~/dronekit-python3
+        steps:
+            - checkout
+            - run:
+                  name: "Clone PX4"
+                  command: git clone -b stable https://github.com/PX4/Firmware.git ~/px4
+            - run:
+                  name: "Launch PX4 into Docker"
+                  command: |
+                      sudo docker run -it --privileged \
+                      --env=LOCAL_USER_ID="$(id -u)" \
+                      -v ~/px4:/src/firmware/:rw \
+                      -p 14556:14556/udp \
+                      --name=px4container px4io/px4-dev-simulation:latest \
+                      -w /src/firmware
+                      make px4_sitl_default gazebo
+            - run:
+                  name: "Sleep"
+                  command: "sleep 10"
 
-# Send a notification on Gitter
-notify:
- webhooks:
-   - url: https://webhooks.gitter.im/e/27b0e1a9fede99dbbe6c
+
 
 # Workflow definition
 # Run Python 2 and Python 3 testing in parallel
 # and deploy if the Python 2 build succeeds
 workflows:
-  version: 2
-  build_test_deploy:
-    jobs:
-      - python2
-      - python3
-#      disabling until we find a new docs server
-#      - deploy:
-#          requires:
-#            - python2
-#          filters:
-#            branches:
-#              only:
-#                - master
+    version: 2
+    build_test_deploy:
+        jobs:
+            - px4

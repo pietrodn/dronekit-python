@@ -57,8 +57,8 @@ jobs:
                       --env=LOCAL_USER_ID="$(id -u)" \
                       -v ~/px4:/src/firmware/:rw \
                       -p 14556:14556/udp \
-                      --name=px4container px4io/px4-dev-simulation:latest \
                       -w="/src/firmware" \
+                      --name=px4container px4io/px4-dev-simulation:latest \
                       make px4_sitl_default gazebo
             - run:
                   name: "Sleep"

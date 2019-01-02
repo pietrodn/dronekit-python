@@ -44,6 +44,7 @@ jobs:
             - image: circleci/python:3.6-stretch
         working_directory: ~/dronekit-python3
         steps:
+            - setup_remote_docker
             - checkout
             - run:
                   name: "Clone PX4"

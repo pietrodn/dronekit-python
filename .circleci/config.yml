@@ -44,24 +44,14 @@ jobs:
             - image: circleci/python:3.6-stretch
         working_directory: ~/dronekit-python3
         steps:
-            - setup_remote_docker:
-                  docker_layer_caching: true
             - checkout
-            - run:
-                  name: "Clone PX4"
-                  command: git clone -b stable https://github.com/PX4/Firmware.git ~/px4
-            - run:
-                  name: "Check that ~/px4 is not empty"
-                  command: "ls ~/px4"
             - run:
                   name: "Launch PX4 into Docker"
                   command: |
                       docker run -it \
-                      -v ~/px4:/src/firmware:rw \
                       -p 14556:14556/udp \
-                      -w="/src/firmware" \
                       --name=px4container px4io/px4-dev-simulation:latest \
-                      bash -c "pwd; ls -la; make posix_sitl_default gazebo"
+                      bash -c "git clone -b stable https://github.com/PX4/Firmware.git /src/firmware && cd /src/firmware && make posix_sitl_default gazebo"
             - run:
                   name: "Sleep"
                   command: "sleep 10"

@@ -55,11 +55,11 @@ jobs:
                   command: |
                       docker run -it --privileged \
                       --env=LOCAL_USER_ID="$(id -u)" \
-                      -v ~/px4:/src/firmware/:rw \
+                      -v ~/px4:/src/firmware:rw \
                       -p 14556:14556/udp \
                       -w="/src/firmware" \
                       --name=px4container px4io/px4-dev-simulation:latest \
-                      make posix_sitl_default gazebo
+                      bash -c "pwd; ls; make posix_sitl_default gazebo"
             - run:
                   name: "Sleep"
                   command: "sleep 10"

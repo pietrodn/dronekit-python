@@ -44,7 +44,8 @@ jobs:
             - image: circleci/python:3.6-stretch
         working_directory: ~/dronekit-python3
         steps:
-            - setup_remote_docker
+            - setup_remote_docker:
+                  docker_layer_caching: true
             - checkout
             - run:
                   name: "Clone PX4"
@@ -52,7 +53,7 @@ jobs:
             - run:
                   name: "Launch PX4 into Docker"
                   command: |
-                      sudo docker run -it --privileged \
+                      docker run -it --privileged \
                       --env=LOCAL_USER_ID="$(id -u)" \
                       -v ~/px4:/src/firmware/:rw \
                       -p 14556:14556/udp \

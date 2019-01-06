@@ -18,7 +18,8 @@ common: &commonsteps
               sudo apt-get update
               sudo apt-get install -y docker-ce
               docker --version
-              sudo service start docker
+              sudo systemctl daemon-reload
+              sudo systemctl start docker
 
     - run:
         name: Install dronekit with dependencies

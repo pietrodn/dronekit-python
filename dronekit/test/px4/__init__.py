@@ -72,7 +72,7 @@ def find_free_port():
 
 @contextmanager
 def px4_vehicle():
-    with PX4Runner(udp_port=find_free_port()) as runner:
+    with PX4Runner() as runner:
         vehicle = dronekit.connect('udpout:127.0.0.1:{}'.format(runner.port))
         yield vehicle
         vehicle.close()

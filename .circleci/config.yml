@@ -4,7 +4,6 @@
 common: &commonsteps
   steps:
     - checkout
-    - setup_remote_docker
 
     - run:
         name: Install dronekit with dependencies

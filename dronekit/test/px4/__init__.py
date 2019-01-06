@@ -31,7 +31,7 @@ class PX4Runner:
         return False
 
     def __enter__(self):
-        self._logger.info("Initiating PX4 simulation...")
+        self._logger.info("Initiating PX4 simulation on port {}...".format(self.port))
         self._process = subprocess.Popen(
             [
                 "docker", "run", "-i", "--init", "-p", "{}:14556/udp".format(self.port),
@@ -72,7 +72,7 @@ def find_free_port():
 
 @contextmanager
 def px4_vehicle():
-    with PX4Runner() as runner:
-        vehicle = dronekit.connect('udpout:127.0.0.1:{}'.format(runner.port))
+    with PX4Runner(udp_port=find_free_port()) as runner:
+        vehicle = dronekit.connect('udpout:0.0.0.0:{}'.format(runner.port))
         yield vehicle
         vehicle.close()

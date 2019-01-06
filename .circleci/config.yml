@@ -4,6 +4,7 @@
 common: &commonsteps
   steps:
     - checkout
+    - setup_remote_docker
 
     - run:
         name: Install dronekit with dependencies
@@ -15,12 +16,17 @@ common: &commonsteps
           pip install . -UI
 
     - run:
+        name: Download Docker image with PX4 simulator
+        command: docker pull pietrodn/px4_gazebo_docker:latest
+
+    - run:
         name: Run dronekit tests
         environment:
           SITL_SPEEDUP: 10
           SITL_RATE: 200
         command: |
           source venv/bin/activate
+          nosetests -svx dronekit.test.px4
           nosetests -svx dronekit.test.unit
           nosetests -svx dronekit.test.sitl
 
@@ -60,9 +66,9 @@ jobs:
           command: ./scripts/update-docs.sh
 
 # Send a notification on Gitter
-notify:
- webhooks:
-   - url: https://webhooks.gitter.im/e/27b0e1a9fede99dbbe6c
+#notify:
+# webhooks:
+#   - url: https://webhooks.gitter.im/e/27b0e1a9fede99dbbe6c
 
 # Workflow definition
 # Run Python 2 and Python 3 testing in parallel

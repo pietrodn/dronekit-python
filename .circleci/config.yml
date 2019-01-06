@@ -4,7 +4,7 @@
 common: &commonsteps
   steps:
     - checkout
-
+    - setup-docker-engine
     - run:
         name: Install dronekit with dependencies
         command: |
